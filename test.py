@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument('--content-dir', type=str, default='./test_images/content')
     parser.add_argument('--style-dir', type=str, default='./test_images/style')
     parser.add_argument('--output-dir', type=str, default='./test_images/output')
-    parser.add_argument('--model', type=str, default='./model.ckpt')
+    parser.add_argument('--model', type=str, default='/app/model.ckpt')
     parser.add_argument('--save-as', type=str, default='png')
     parser.add_argument('--content-size', type=int, default=512,
                         help='Content images are resized such that the smaller edge has this size.')
@@ -49,8 +49,11 @@ if __name__ == '__main__':
     if not output_dir.exists():
         output_dir.mkdir(parents=True, exist_ok=True)
 
-    model = LightningModel.load_from_checkpoint(checkpoint_path=args['model'])
-    model = model.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+    # model = LightningModel.load_from_checkpoint(checkpoint_path=args['model'])
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
+    # model_path = "/app/model.ckpt"
+    model = LightningModel.load_from_checkpoint(checkpoint_path=args['model'], map_location=device)
+    # model = model.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
     model.eval()
 
     pbar = tqdm(total=len(content_files) * len(style_files))

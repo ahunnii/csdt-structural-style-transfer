@@ -9,8 +9,8 @@ import streamlit as st
 from PIL import Image
 import base64
 import torch
-from style.lib import dataset
-from style.lib.lightning.lightningmodel import LightningModel
+from lib import dataset
+from lib.lightning.lightningmodel import LightningModel
 import torchvision.transforms as T
 
 
@@ -104,7 +104,7 @@ extensions = [".png", ".jpeg", ".jpg"]
 if content_img is not None and style_img is not None:
     
     # Path to model 
-    model_path = './model.ckpt'
+    model_path = '/app/model.ckpt'
     
     # Output Path 
     output_path = './output.png'
@@ -115,8 +115,12 @@ if content_img is not None and style_img is not None:
     # Stylize Image
     if stylize_button:
         
-        model = LightningModel.load_from_checkpoint(checkpoint_path = model_path)
-        model = model.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+        # model = LightningModel.load_from_checkpoint(checkpoint_path = model_path)
+        # model = model.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
+        model_path = "/app/model.ckpt"
+        model = LightningModel.load_from_checkpoint(checkpoint_path=model_path, map_location=device)
+
         model.eval()
 
         with torch.no_grad():

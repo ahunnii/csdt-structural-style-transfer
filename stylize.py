@@ -28,16 +28,17 @@ def parse_args():
     parser.add_argument('--content', type=str, default='./content.png')
     parser.add_argument('--style', type=str, default='./style.png')
     parser.add_argument('--output', type=str, default='./output.png')
-    parser.add_argument('--model', type=str, default='./model.ckpt')
+    parser.add_argument('--model', type=str, default='/app/model.ckpt')
 
     return vars(parser.parse_args())
 
 
 if __name__ == '__main__':
     args = parse_args()
-
-    model = LightningModel.load_from_checkpoint(checkpoint_path=args['model'])
-    model = model.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # model = LightningModel.load_from_checkpoint(checkpoint_path=args['model'])
+    # model = model.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+    model = LightningModel.load_from_checkpoint(checkpoint_path=args['model'], map_location=device)
     model.eval()
 
     with torch.no_grad():

@@ -78,4 +78,4 @@ if __name__ == '__main__':
                       callbacks=[lr_monitor])
 
     trainer.fit(model, datamodule=datamodule)
-    trainer.save_checkpoint("./model.ckpt")
+    trainer.save_checkpoint("/app/model.ckpt")
